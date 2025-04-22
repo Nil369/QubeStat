@@ -1,0 +1,31 @@
+# Application Environment
+APP_ENV=development
+APP_DEBUG=true
+APP_URL=http://localhost/qubestat/backend
+APP_NAME="QubeStat API"
+
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=qubestat
+DB_USERNAME=root
+DB_PASSWORD=
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRATION=3600
+JWT_REFRESH_EXPIRATION=604800
+
+# Firebase Configuration
+FIREBASE_CREDENTIALS=firebase-credentials.json
+FIREBASE_DATABASE_URL=https://your-firebase-project.firebaseio.com
+
+# File Upload Configuration
+UPLOAD_MAX_SIZE=5242880
+ALLOWED_IMAGE_TYPES=jpg,jpeg,png,gif
+UPLOAD_DIR=public/img/
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS=*
+CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Content-Type,Authorization,X-Requested-With 

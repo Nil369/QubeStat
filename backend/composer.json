@@ -4,6 +4,7 @@
     "description": "QubeStat backend",
     "type": "object",
     "require": {
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "phpmailer/phpmailer": "^6.9"
     }
 }

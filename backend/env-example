@@ -2,3 +2,11 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASS=
 DB_NAME=<your_db_name>
+
+# Email Service
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=youremail@example.com
+SMTP_PASS=yourpassword
+SMTP_FROM=youremail@example.com
+SMTP_FROM_NAME=Your Name or App Name

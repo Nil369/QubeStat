@@ -1,16 +1,40 @@
 <?php
 
 // Allow CORS & Application headers
-header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header('Access-Control-Allow-Methods: GET,POST,PUT,DELETE');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+header("Access-Control-Allow-Methods: GET,POST,PUT,DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+// Default response Content-Type
+header("Content-Type: application/json");
 
 require_once __DIR__ . '/../../config/db_connect.php';
 require_once __DIR__ . '/../../models/Users.models.php';
 require_once __DIR__ . '/../../helpers/XML_encoder.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+$contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+$rawInput = file_get_contents("php://input");
+$data = null;
+
+// Handle input: XML or JSON
+if (strpos($contentType, "application/xml") !== false) {
+    libxml_use_internal_errors(true);
+    $xml = simplexml_load_string($rawInput);
+    if ($xml !== false) {
+        $data = json_decode(json_encode($xml), true);
+    } else {
+        $response = [
+            "status" => "error",
+            "message" => "Invalid XML format"
+        ];
+        echo json_encode($response, JSON_PRETTY_PRINT);
+        exit;
+    }
+} else {
+    $data = json_decode($rawInput, true);
+}
+
 $response = [];
 
 try {
@@ -54,7 +78,6 @@ try {
             break;
 
         case 'POST':
-            $data = json_decode(file_get_contents("php://input"), true);
             if (!isset($data['username'], $data['email'], $data['password'], $data['first_name'], $data['last_name'])) {
                 $response = [
                     "status" => "error",
@@ -86,10 +109,8 @@ try {
                 break;
             }
 
-            $data = json_decode(file_get_contents("php://input"), true);
             $allowedFields = ['username', 'email', 'first_name', 'last_name'];
-
-            $fieldsToUpdate = array_intersect_key($data, array_flip($allowedFields));
+            $fieldsToUpdate = array_intersect_key($data ?? [], array_flip($allowedFields));
 
             if (empty($fieldsToUpdate)) {
                 $response = [
@@ -147,7 +168,6 @@ try {
     ];
 }
 
-// Convert to XML if ?xml=true is passed
 if (isset($_GET['xml']) && $_GET['xml'] === 'true') {
     header("Content-Type: application/xml");
     echo jsonToXml($response);

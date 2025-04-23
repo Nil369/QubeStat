@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "name": "qubestat/backend",
+    "description": "QubeStat backend",
+    "type": "object",
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

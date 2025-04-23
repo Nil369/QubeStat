@@ -61,7 +61,7 @@
     <div class="card">
         <h2>API Documentation</h2>
         <p>Explore the API endpoints and learn how to integrate with QubeStat services.</p>
-        <a href="http://localhost/qubestat/backend/api/docs"  class="btn">View API Documentation</a>
+        <a href="http://localhost/QubeStat/backend/api/docs"  class="btn">View API Documentation</a>
     </div>
 
 

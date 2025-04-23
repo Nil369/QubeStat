@@ -2,267 +2,259 @@
   "openapi": "3.0.0",
   "info": {
     "title": "QubeStat API",
-    "description": "API documentation for the QubeStat application. All endpoints support both JSON and XML response formats. To receive XML responses, append `?xml=true` to any API URL.",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "description": "API documentation for QubeStat project."
   },
   "servers": [
     {
-      "url": "http://localhost/qubestat/backend/api/",
-      "description": "Local development server"
+      "url": "http://localhost/QubeStat/backend/api"
+    },
+    {
+      "url": "http://qubestat.com/QubeStat/backend/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Operations related to users"
     }
   ],
   "paths": {
-    "/db/status": {
+    "/users/users.php": {
       "get": {
-        "summary": "Get database status",
-        "description": "Returns database connection status and table counts",
-        "tags": ["Database"],
-        "parameters": [
-          {
-            "name": "xml",
-            "in": "query",
-            "description": "Set to 'true' to receive response in XML format",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["true"]
-            }
-          }
-        ],
+        "tags": ["users"],
+        "summary": "Get list of users",
+        "description": "Returns a list of all users in the system.",
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "List of users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DbStatus"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/DbStatus"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
           },
           "500": {
-            "description": "Database error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["users"],
+        "summary": "Create a new user",
+        "description": "Adds a new user to the system.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
               }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "put": {
+        "tags": ["users"],
+        "summary": "Update an existing user",
+        "description": "Updates the details of an existing user in the system using the provided user ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "ID of the user to update",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["users"],
+        "summary": "Delete an existing user",
+        "description": "Deletes an existing user from the system using the provided user ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "ID of the user to delete",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
     },
-    "/db/users": {
-      "get": {
-        "summary": "Get all users",
-        "description": "Returns a list of all users (passwords excluded)",
-        "tags": ["Database"],
-        "parameters": [
-          {
-            "name": "xml",
-            "in": "query",
-            "description": "Set to 'true' to receive response in XML format",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["true"]
-            }
-          }
-        ],
+
+    "/users/users.php?id": {
+      "GET": {
+        "tags": ["users"],
+        "summary": "Get list of users",
+        "description": "Returns a list of all users in the system.",
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "List of users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserList"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
           },
           "500": {
-            "description": "Database error",
+            "description": "Server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["users"],
+        "summary": "Get a single users",
+        "description": "Returns a user in the system.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "ID of the user to fetch",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "Get": {
+        "tags": ["users"],
+        "summary": "Get a single users by name & email",
+        "description": "Returns a user by name or email",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": true,
+            "description": "ID of the user to fetch",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
     },
-    "/db/products": {
+    "/users/users.php?search": {
       "get": {
-        "summary": "Get all products",
-        "description": "Returns a list of all products",
-        "tags": ["Database"],
+        "tags": ["users"],
+        "summary": "Get a single users by name & email",
+        "description": "Returns a user by name or email",
         "parameters": [
           {
-            "name": "xml",
+            "name": "search",
             "in": "query",
-            "description": "Set to 'true' to receive response in XML format",
-            "required": false,
+            "required": true,
+            "description": "ID of the user to fetch",
             "schema": {
-              "type": "string",
-              "enum": ["true"]
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "List of users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductList"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
           },
           "500": {
-            "description": "Database error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/db/orders": {
-      "get": {
-        "summary": "Get all orders",
-        "description": "Returns a list of all orders with related user and product data",
-        "tags": ["Database"],
-        "parameters": [
-          {
-            "name": "xml",
-            "in": "query",
-            "description": "Set to 'true' to receive response in XML format",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["true"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderList"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderList"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Database error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/db/settings": {
-      "get": {
-        "summary": "Get system settings",
-        "description": "Returns all system settings",
-        "tags": ["Database"],
-        "parameters": [
-          {
-            "name": "xml",
-            "in": "query",
-            "description": "Set to 'true' to receive response in XML format",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["true"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SettingsList"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/SettingsList"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Database error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Server error"
           }
         }
       }
@@ -270,48 +262,6 @@
   },
   "components": {
     "schemas": {
-      "DbStatus": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success"
-          },
-          "connection": {
-            "type": "string",
-            "example": "active"
-          },
-          "mysql_version": {
-            "type": "string",
-            "example": "8.0.27"
-          },
-          "table_counts": {
-            "type": "object",
-            "properties": {
-              "users": {
-                "type": "integer",
-                "example": 10
-              },
-              "products": {
-                "type": "integer",
-                "example": 15
-              },
-              "orders": {
-                "type": "integer",
-                "example": 15
-              },
-              "settings": {
-                "type": "integer",
-                "example": 10
-              }
-            }
-          },
-          "timestamp": {
-            "type": "string",
-            "example": "2023-04-22 10:15:30"
-          }
-        }
-      },
       "User": {
         "type": "object",
         "properties": {
@@ -321,11 +271,16 @@
           },
           "username": {
             "type": "string",
-            "example": "jsmith"
+            "example": "john_doe"
           },
           "email": {
             "type": "string",
-            "example": "john.smith@example.com"
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "hashed_password_here"
           },
           "first_name": {
             "type": "string",
@@ -333,247 +288,16 @@
           },
           "last_name": {
             "type": "string",
-            "example": "Smith"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["admin", "user", "manager"],
-            "example": "user"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["active", "inactive", "suspended"],
-            "example": "active"
+            "example": "Doe"
           },
           "created_at": {
             "type": "string",
-            "example": "2023-04-01 09:30:00"
+            "format": "date-time",
+            "example": "2025-04-23T10:00:00Z"
           }
-        }
-      },
-      "UserList": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success"
-          },
-          "count": {
-            "type": "integer",
-            "example": 10
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/User"
-            }
-          }
-        }
-      },
-      "Product": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "example": "Smartphone X"
-          },
-          "description": {
-            "type": "string",
-            "example": "Latest model with advanced features"
-          },
-          "price": {
-            "type": "number",
-            "format": "decimal",
-            "example": 999.99
-          },
-          "stock": {
-            "type": "integer",
-            "example": 50
-          },
-          "category": {
-            "type": "string",
-            "example": "Electronics"
-          },
-          "image_url": {
-            "type": "string",
-            "example": "img/products/smartphone-x.jpg"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["available", "out_of_stock", "discontinued"],
-            "example": "available"
-          },
-          "created_at": {
-            "type": "string",
-            "example": "2023-04-01 09:30:00"
-          },
-          "updated_at": {
-            "type": "string",
-            "example": "2023-04-01 09:30:00"
-          }
-        }
-      },
-      "ProductList": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success"
-          },
-          "count": {
-            "type": "integer",
-            "example": 15
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Product"
-            }
-          }
-        }
-      },
-      "Order": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "example": 1
-          },
-          "user_id": {
-            "type": "integer",
-            "example": 2
-          },
-          "product_id": {
-            "type": "integer",
-            "example": 1
-          },
-          "quantity": {
-            "type": "integer",
-            "example": 1
-          },
-          "total_price": {
-            "type": "number",
-            "format": "decimal",
-            "example": 999.99
-          },
-          "status": {
-            "type": "string",
-            "enum": ["pending", "processing", "shipped", "delivered", "canceled"],
-            "example": "delivered"
-          },
-          "payment_method": {
-            "type": "string",
-            "example": "Credit Card"
-          },
-          "shipping_address": {
-            "type": "string",
-            "example": "123 Main St, Anytown, AN 12345"
-          },
-          "created_at": {
-            "type": "string",
-            "example": "2023-04-01 09:30:00"
-          },
-          "updated_at": {
-            "type": "string",
-            "example": "2023-04-01 09:30:00"
-          },
-          "username": {
-            "type": "string",
-            "example": "jsmith"
-          },
-          "email": {
-            "type": "string",
-            "example": "john.smith@example.com"
-          },
-          "product_name": {
-            "type": "string",
-            "example": "Smartphone X"
-          },
-          "product_price": {
-            "type": "number",
-            "format": "decimal",
-            "example": 999.99
-          }
-        }
-      },
-      "OrderList": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success"
-          },
-          "count": {
-            "type": "integer",
-            "example": 15
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Order"
-            }
-          }
-        }
-      },
-      "Setting": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "example": "QubeStat"
-          },
-          "description": {
-            "type": "string",
-            "example": "The name of the site"
-          }
-        }
-      },
-      "SettingsList": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success"
-          },
-          "count": {
-            "type": "integer",
-            "example": 10
-          },
-          "data": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/Setting"
-            },
-            "example": {
-              "site_name": {
-                "value": "QubeStat",
-                "description": "The name of the site"
-              },
-              "theme_color": {
-                "value": "#6a1b9a",
-                "description": "Primary theme color"
-              }
-            }
-          }
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "error"
-          },
-          "message": {
-            "type": "string",
-            "example": "Database connection failed: SQLSTATE[HY000] [1045] Access denied"
-          }
-        }
+        },
+        "required": ["username", "email", "password"]
       }
     }
   }
-} 
+}

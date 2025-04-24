@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS settings;
 
 -- Create Users Table
--- Create Users Table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -26,7 +25,6 @@ CREATE TABLE users (
     UNIQUE KEY (email),
     UNIQUE KEY (username)
 );
-
 
 -- Create Products Table
 CREATE TABLE products (
@@ -69,8 +67,6 @@ CREATE TABLE settings (
     UNIQUE KEY (setting_key)
 );
 
--- Insert Sample Users
-INSERT INTO users (username, email, password, first_name, last_name, role) VALUES
 -- Insert Sample Users
 INSERT INTO users (username, email, password, first_name, last_name, role, is_verified) VALUES
 ('admin', 'admin@qubestat.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'User', 'admin', TRUE),
@@ -131,4 +127,4 @@ INSERT INTO settings (setting_key, setting_value, description) VALUES
 ('smtp_host', 'smtp.example.com', 'SMTP server hostname'),
 ('smtp_port', '587', 'SMTP server port'),
 ('smtp_encryption', 'tls', 'SMTP encryption type'),
-('maintenance_mode', 'false', 'Site maintenance mode'); 
+('maintenance_mode', 'false', 'Site maintenance mode');

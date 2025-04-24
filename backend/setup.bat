@@ -1,5 +1,18 @@
 @echo off
 
+REM seting up the environment for the project
+if not exist ".env" (
+    echo [+] Copying .env.example to .env...
+    copy env-example .env >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [+] .env file created successfully.
+    ) else (
+        echo [-] Failed to create .env file.
+        exit /b 1
+    )
+)
+
+
 REM Check if composer exists
 where composer >nul 2>&1
 if %ERRORLEVEL% EQU 0 (

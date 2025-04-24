@@ -38,6 +38,28 @@ if (strpos($contentType, "application/xml") !== false) {
 $response = [];
 
 try {
+    
+    // Handle email verification via GET
+    if ($method === 'GET' && isset($_GET['code'])) {
+        $code = $_GET['code'];
+    
+        if (verifyUserByCode($code)) {
+            $response = [
+                "status" => "success",
+                "message" => "Email successfully verified."
+            ];
+        } else {
+            $response = [
+                "status" => "error",
+                "message" => "Invalid or expired verification code."
+            ];
+        }
+    
+        echo json_encode($response, JSON_PRETTY_PRINT);
+        exit;
+    }
+    
+
     switch ($method) {
         case 'GET':
             // Priority: ID > Search > All
@@ -109,8 +131,8 @@ try {
                 break;
             }
 
-            $allowedFields = ['username', 'email', 'first_name', 'last_name'];
-            $fieldsToUpdate = array_intersect_key($data ?? [], array_flip($allowedFields));
+            $restrictedFields = ['id', 'created_at', 'updated_at'];
+            $fieldsToUpdate = array_diff_key($data ?? [], array_flip($restrictedFields));
 
             if (empty($fieldsToUpdate)) {
                 $response = [

@@ -3,13 +3,22 @@ require_once __DIR__ . '/../config/db_connect.php';
 
 // CREATE
 function createUser($username, $email, $password, $first_name, $last_name) {
-    global $conn;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
-    $verification_code = bin2hex(random_bytes(16)); // Random verification code
-    $sql = "INSERT INTO users (username, email, password, first_name, last_name, verification_code) VALUES (?, ?, ?, ?, ?, ?)";
+    global $conn, $verificationCode;
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $verificationCode = bin2hex(random_bytes(16));
+
+    $sql = "INSERT INTO users (username, email, password, first_name, last_name, role, status, is_verified, verification_code) 
+            VALUES (?, ?, ?, ?, ?, 'user', 'active', 0, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssss", $username, $email, $hash, $first_name, $last_name, $verification_code);
-    return mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ssssss", $username, $email, $hashedPassword, $first_name, $last_name, $verificationCode);
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        return ['success' => true, 'verification_code' => $verificationCode];
+    }
+
+    return ['success' => false];
 }
 
 // READ (all)
@@ -88,6 +97,35 @@ function verifyUser($email, $code) {
     mysqli_stmt_bind_param($stmt, "ss", $email, $code);
     return mysqli_stmt_execute($stmt);
 }
+
+function verifyUserByCode($code) {
+    global $conn;
+    $sql = "UPDATE users SET is_verified = 1, verification_code = NULL WHERE verification_code = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $code);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_affected_rows($stmt) > 0;
+}
+
+
+function getUserByEmail($email, $conn) {
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return $result->fetch_assoc();
+}
+
+function updateUserVerificationCode($userId, $verificationCode, $conn) {
+    $sql = "UPDATE users SET verification_code = ? WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $verificationCode, $userId);
+    return mysqli_stmt_execute($stmt);
+}
+
+// ... your other user-related functions ...
+
 
 // Generate reset token
 function generateResetToken($email) {

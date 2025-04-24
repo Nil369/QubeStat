@@ -1,0 +1,421 @@
+openapi: 3.0.0
+info:
+  title: QubeStat API
+  version: 1.0.0
+  description: API documentation for QubeStat project.
+servers:
+  - url: http://localhost/QubeStat/backend/api
+  - url: http://qubestat.com/QubeStat/backend/api
+tags:
+  - name: users
+    description: Operations related to users
+  - name: auth
+    description: Authentication operations
+paths:
+  /users/users.php:
+    get:
+      tags:
+        - users
+      summary: Get list of users
+      description: Returns a list of all users in the system.
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      description: Adds a new user to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples: # Add Examples here
+              example:
+                value:
+                  username: "newuser"
+                  email: "newuser@example.com"
+                  password: "password123"
+                  first_name: "New"
+                  last_name: "User"
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid input
+    put:
+      tags:
+        - users
+      summary: Update an existing user
+      description: Updates the details of an existing user in the system using the provided user ID.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the user to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples: # Added examples here
+              example:
+                value:
+                  username: "newuser"
+                  email: "newuser@example.com"
+                  password: "password123"
+                  first_name: "New"
+                  last_name: "User"
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - users
+      summary: Delete an existing user
+      description: Deletes an existing user from the system using the provided user ID.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the user to delete
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
+  /users/users.php?id:
+    GET:
+      tags:
+        - users
+      summary: Get list of users
+      description: Returns a list of all users in the system.
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - users
+      summary: Get a single users
+      description: Returns a user in the system.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the user to fetch
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    Get:
+      tags:
+        - users
+      summary: Get a single users by name & email
+      description: Returns a user by name or email
+      parameters:
+        - name: search
+          in: query
+          required: true
+          description: Search criteria (name or email)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+  /users/users.php?search:
+    get:
+      tags:
+        - users
+      summary: Get a single users by name & email
+      description: Returns a user by name or email
+      parameters:
+        - name: search
+          in: query
+          required: true
+          description: Search criteria (name or email)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+  /auth/login.php:
+    post:
+      tags:
+        - auth
+      summary: Login to the system
+      description: Authenticates a user and returns a session token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth/LoginRequest'
+            examples: 
+              example:
+                value:
+                  email: "newuser@example.com"
+                  password: "password123"
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Auth/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth/LoginResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth/ErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth/ErrorResponse'
+  /auth/register.php:
+    post:
+      tags:
+        - auth
+      summary: Register a new user
+      description: Creates a new user account and sends a verification email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth/RegisterRequest'
+            examples: # Added examples here
+              example:
+                value:
+                  username: "newuser"
+                  email: "newuser@example.com"
+                  password: "password123"
+                  first_name: "New"
+                  last_name: "User"
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Auth/RegisterRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth/RegisterResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth/RegisterResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth/ErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth/ErrorResponse'
+  /auth/logout.php:
+    post:
+      tags:
+        - auth
+      summary: Logout from the system
+      description: Destroys the user session and logs out the user
+      parameters:
+        - name: xml
+          in: query
+          required: false
+          description: Set to 'true' to get XML response
+          schema:
+            type: string
+            enum:
+              - 'true'
+              - 'false'
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth/LogoutResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth/LogoutResponse'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        password:
+          type: string
+          example: hashed_password_here
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        role:
+          type: string
+          example: 'admin'
+        status:
+          type: string
+          example: 'active'
+        created_at:
+          type: string
+          format: date-time
+          example: '2025-04-23T10:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2025-04-23T12:30:00Z'
+        is_verified:
+          type: boolean
+          example: true
+        verification_code:
+          type: string
+          example: '123456'
+        reset_token:
+          type: string
+          example: 'reset_token_string'
+      required:
+        - username
+        - email
+        - password
+    Auth:
+      type: object
+      properties:
+        LoginRequest:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+              example: user@example.com
+            password:
+              type: string
+              example: yourpassword
+          required:
+            - email
+            - password
+        LoginResponse:
+          type: object
+          properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: Login successful
+            token:
+              type: string
+              description: Session token (if applicable)
+              example: your_session_token
+        RegisterRequest:
+          type: object
+          properties:
+            username:
+              type: string
+              example: john_doe
+            email:
+              type: string
+              format: email
+              example: john@example.com
+            password:
+              type: string
+              example: securepassword
+            first_name:
+              type: string
+              example: John
+            last_name:
+              type: string
+              example: Doe
+          required:
+            - username
+            - email
+            - password
+            - first_name
+            - last_name
+        RegisterResponse:
+          type: object
+          properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: User registered successfully. Please check your email to verify your account.
+        ErrorResponse:
+          type: object
+          properties:
+            status:
+              type: string
+              example: error
+            message:
+              type: string
+              example: Missing required fields
+        LogoutResponse:
+          type: object
+          properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: Logout successful

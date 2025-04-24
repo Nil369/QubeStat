@@ -2,12 +2,8 @@
 
 // Load Composer autoloader only once wherever this is included
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/load_env.php'; // Load environment variables
 
-use Dotenv\Dotenv;
-
-// Load environment variables
-$dotenv = Dotenv::createImmutable(__DIR__ . "/../");
-$dotenv->load();
 
 // Get DB details from .env
 $hostname = $_ENV['DB_HOST'];

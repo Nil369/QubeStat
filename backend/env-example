@@ -1,12 +1,18 @@
+# Base API url
+APP_BASE_URL=http://localhost/qubestat/backend/api/
+
+
+# Database Config
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=
 DB_NAME=<your_db_name>
 
-# Email Service
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=youremail@example.com
-SMTP_PASS=yourpassword
-SMTP_FROM=youremail@example.com
-SMTP_FROM_NAME=Your Name or App Name
+
+# Email Service | Later Change to Gmail
+SMTP_HOST=sandbox.smtp.mailtrap.io
+SMTP_PORT=2525
+SMTP_USER=<your_user_id>
+SMTP_PASS=<your_password>
+SMTP_FROM=qubestat@gmail.com
+SMTP_FROM_NAME=QubeStat

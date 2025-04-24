@@ -1,7 +1,11 @@
 <?php
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/db_connect.php';
+require_once __DIR__ . '/../../models/Users.models.php';
 require_once __DIR__ . '/../../helpers/XML_encoder.php';
+require_once __DIR__ . '/../../helpers/emails/verify-email.php';
+require_once __DIR__ . '/../../helpers/send_mail.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -9,29 +13,70 @@ header("Content-Type: application/json");
 
 $data = json_decode(file_get_contents("php://input"), true);
 
+// Validate input
 if (!isset($data['username'], $data['email'], $data['password'], $data['first_name'], $data['last_name'])) {
-    echo json_encode(["status" => "error", "message" => "Missing required fields"]);
+    $response = ["status" => "error", "message" => "Missing required fields"];
+    
+    if (isset($_GET['xml']) && $_GET['xml'] === 'true') {
+        header("Content-Type: application/xml");
+        echo jsonToXml($response);
+    } else {
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
     exit;
 }
 
-$apiUrl = 'http://localhost/QubeStat/backend/api/users/users.php';
-$options = [
-    'http' => [
-        'method'  => 'POST',
-        'header'  => "Content-Type: application/json",
-        'content' => json_encode($data)
-    ]
-];
-$response = file_get_contents($apiUrl, false, stream_context_create($options));
-$result = json_decode($response, true);
+// Call the createUser function to register the user AND get the verification code
+$registrationResult = createUser(
+    $data['username'],
+    $data['email'],
+    $data['password'],
+    $data['first_name'],
+    $data['last_name']
+);
 
-if ($result['status'] === 'success') {
-    $code = bin2hex(random_bytes(16));
-    $conn->query("UPDATE users SET verification_code = '$code' WHERE email = '{$data['email']}'");
-    $link = "http://localhost/QubeStat/backend/api/users/users.php?code=$code";
-    sendMail($data['email'], "Verify your email", "Click here to verify: $link");
+if (!$registrationResult['success']) {
+    $response = ["status" => "error", "message" => "Failed to create user."];
+    
+    if (isset($_GET['xml']) && $_GET['xml'] === 'true') {
+        header("Content-Type: application/xml");
+        echo jsonToXml($response);
+    } else {
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
+    exit;
 }
 
-echo json_encode($result);
+// Access the verification code from the registration result
+$code = $registrationResult['verification_code'];
+
+// Try to send verification email
+$email = $data['email'];
+$link = $_ENV["APP_BASE_URL"] . "users/users.php?code=$code";
+$htmlBody = getVerificationEmailHTML($link);
+
+$mailSent = sendMail($email, "Verify your email", $htmlBody);
+
+if (!$mailSent) {
+    $response = ["status" => "error", "message" => "Failed to send verification email."];
+    
+    if (isset($_GET['xml']) && $_GET['xml'] === 'true') {
+        header("Content-Type: application/xml");
+        echo jsonToXml($response);
+    } else {
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
+    exit;
+}
+
+// If email sent successfully, you can optionally send a success message here
+$response = ["status" => "success", "message" => "User registered successfully. Please check your email to verify your account."];
+
+if (isset($_GET['xml']) && $_GET['xml'] === 'true') {
+    header("Content-Type: application/xml");
+    echo jsonToXml($response);
+} else {
+    echo json_encode($response, JSON_PRETTY_PRINT);
+}
 
 ?>

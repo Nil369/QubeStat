@@ -70,8 +70,6 @@ CREATE TABLE settings (
 );
 
 -- Insert Sample Users
-INSERT INTO users (username, email, password, first_name, last_name, role) VALUES
--- Insert Sample Users
 INSERT INTO users (username, email, password, first_name, last_name, role, is_verified) VALUES
 ('admin', 'admin@qubestat.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'User', 'admin', TRUE),
 ('jsmith', 'john.smith@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'John', 'Smith', 'user', FALSE),

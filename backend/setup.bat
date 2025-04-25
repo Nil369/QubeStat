@@ -1,50 +1,67 @@
 @echo off
 
-REM seting up the environment for the project
-if not exist ".env" (
-    echo [+] Copying .env.example to .env...
-    copy env-example .env >nul 2>&1
-    if %ERRORLEVEL% EQU 0 (
-        echo [+] .env file created successfully.
-    ) else (
-        echo [-] Failed to create .env file.
-        exit /b 1
-    )
-)
+REM QubeStat Project Setup for Windows
+echo.
+echo ================================
+echo  QubeStat Project Setup: WINDOWS
+echo ================================
+echo.
+echo [!] Please RESTART VS Code or your terminal AFTER installing Composer.
+echo     Then re-run this script if dependencies are not installed.
+echo.
 
+REM Force copy env-example to .env
+echo [+] Updating .env file from env-example...
+copy /Y env-example .env >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    echo [+] .env file created or updated successfully.
+) else (
+    echo [-] Failed to update .env file.
+    exit /b 1
+)
 
 REM Check if composer exists
 where composer >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
-    echo [+] Installing composer dependencies...
+    echo [+] Composer found. Installing dependencies...
     composer install
     if %ERRORLEVEL% EQU 0 (
         echo [+] Composer dependencies installed successfully.
         exit /b 0
     ) else (
-        echo [-] Failed to install composer dependencies.
+        echo [-] Composer failed to install dependencies.
         exit /b 1
     )
 ) else (
-    REM Download composer-setup.exe if it doesn't exist
-    REM Check if composer-setup exists
+    REM Composer not found, install it
     if not exist "composer-setup.exe" (
         echo [+] Downloading composer-setup.exe...
-        curl https://getcomposer.org/Composer-Setup.exe -o composer-setup.exe
-        if %ERRORLEVEL% EQU 0 (
-            echo [+] composer-setup.exe downloaded!!
-        ) else (
-            echo [-] Failed to download composer-setup.exe
+        curl -s -O https://getcomposer.org/Composer-Setup.exe
+        if %ERRORLEVEL% NEQ 0 (
+            echo [-] Failed to download Composer setup.
             exit /b 1
         )
     )
-    
-    echo [+] Installing composer...
+
+    echo [+] Running composer setup...
     start /wait composer-setup.exe
-    
-    echo [+] Composer installed successfully.
+
     del composer-setup.exe
-    
-    echo [-] Restart the shell or VS code to access composer.
-    exit /b 1
+
+    REM Try again after install
+    where composer >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [+] Composer installed. Installing dependencies...
+        composer install
+        if %ERRORLEVEL% EQU 0 (
+            echo [+] Dependencies installed successfully.
+            exit /b 0
+        ) else (
+            echo [-] Composer found but failed to install dependencies.
+            exit /b 1
+        )
+    ) else (
+        echo [-] Composer install failed or not in PATH. Restart VS Code and try again.
+        exit /b 1
+    )
 )

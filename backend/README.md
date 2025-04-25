@@ -1,83 +1,124 @@
 # QubeStat Backend API
 
-A production-ready PHP backend application following LAMP architecture with JWT authentication, designed to work on both Windows and Linux.
+A production-ready PHP backend application built using the LAMP stack, offering secure RESTful endpoints with JSON and XML support, and platform-agnostic setup flows.
 
-## Cross-Platform Compatibility
+---
 
-This API has been designed to work seamlessly on:
-- Windows with XAMPP
-- Linux with standard LAMP stack
+## ✅ Cross-Platform Compatibility
 
-We've removed dependencies on platform-specific extensions (like `ext-sodium`) to ensure smooth installation across both environments.
+This backend runs on:
 
-## Features
+- **Windows/Linux/MacOS** (using [XAMPP](https://www.apachefriends.org/))
 
-- OOP-based architecture with PSR-4 autoloading
-- JWT authentication for securing API endpoints
-- RESTful API design with JSON and XML response formats
-- Image upload functionality with validation
-- Admin and User authentication flows
-- Swagger UI for API documentation
-- Cross-platform compatibility (Windows/Linux)
 
-## Directory Structure
+All platform-specific dependencies (like `ext-sodium`) have been removed for smooth installation.
 
-The application follows a structured approach:
+---
+
+## ⚙️ Features
+
+- Modular autoloaded structure
+- PHP session based authentication
+- XML and JSON response formats
+- Email verification support
+- File uploads with validation
+- Role-based (admin/user) login
+- Swagger UI for API docs
+- Cross-platform compatibility
+
+---
+
+## 📁 Folder Structure
 
 ```
 backend/
-├── public/             # Public accessible files
-├── app/                # Application code
-│   ├── api/            # API endpoints
-│   ├── config/         # Configuration files
-│   ├── controllers/    # Controllers
-│   ├── models/         # Database models
-│   ├── middleware/     # Request middleware
-│   ├── helpers/        # Helper utilities
-│   ├── services/       # Business logic
-│   ├── routes/         # Route definitions
-│   └── logs/           # Application logs
-└── vendor/             # Composer dependencies
+├── api/                    # All API endpoint wrappers
+│   └── users/              # User endpoints 
+│   └── admin/              # Admin endpoints
+│   └── auth/               # Auth endpoints (register, login, logout, etc.)
+│   └── docs/               # Interactive API docs
+│   └── products/           # Products endpoints
+│   └── payment-gateway/    # User endpoints (register, login, logout, etc.)
+├── config/                 # Configuration files (.env, db_connect, etc.)
+├── helpers/                # Utility functions (XML encoder, mailer, etc.)
+├── middlewares/            # Authentication middleware
+├── models/                 # Data models (User, etc.)
+├── public/                 # Public accessible files (index.php, etc.)
+├── vendor/                 # Composer packages
+├── setup.bat               # Windows setup script
+├── setup_unix.sh           # Linux/macOS setup script
+└── env-example             # Sample environment configuration
 ```
 
-## Setup Instructions
+---
 
-### Windows
+## 🚀 Getting Started
+
+### 🔒 Environment Setup
+
+Create or update your `.env` file:
+
+```bash
+cp env-example .env
 ```
+
+Or let the setup script do it for you.
+
+---
+
+### 🪟 Windows Setup
+
+```bash
 cd C:\xampp\htdocs\qubestat\backend
-.\setup.bat
+setup.bat
 ```
 
-### Linux
+> ⚠️ **Restart your terminal or VS Code after Composer installation** (if done during setup).
+
+---
+
+### 🐧 Linux/macOS Setup
+
+```bash
+cd /opt/lampp/htdocs/QubeStat/backend
+chmod +x setup_unix.sh
+./setup_unix.sh
 ```
-cd /var/www/html/qubestat/backend
-chmod +x setup.sh
-./setup.sh
+
+> ⚠️ If `composer` is newly installed, restart your terminal before re-running the script.
+
+---
+
+## 📘 API Documentation
+
+Swagger-based API documentation is available at:
+
+```
+http://localhost/QubeStat/backend/api/docs/
 ```
 
-For detailed setup instructions, see `README-SETUP.md`.
+---
 
-## API Documentation
+## 🧾 Response Format Options
 
-API documentation is available at `/api/docs/` endpoint using Swagger UI.
+- **JSON (default)**: No action needed
+- **XML**
+    -   Add `?xml=true` to your endpoint
+    -   Add `?search=adm&xml=true` to your endpoint to get search results in xml
 
-## Response Formats
+Example:
 
-The API supports both JSON and XML response formats:
+```http
+GET /api/users/users.php?id=1&xml=true
+```
 
-- Default: JSON
-- XML: Append `?xml=true` to any endpoint
 
-For detailed information about the XML/JSON feature, see `README-XML.md`.
+---
 
-## Authentication
+## 🧑‍💻 Development Notes
 
-- JWT tokens are used for API authentication
-- Tokens must be passed in the Authorization header
-- Example: `Authorization: Bearer [token]`
+- PHP 7.4+ required
+- Apache/MySQL installed
+- Use Composer for dependency management
 
-## Development
-
-- PHP 7.4 or higher required
-- LAMP stack environment 
-- Follow PSR-12 coding standards 
+---

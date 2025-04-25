@@ -3,15 +3,10 @@
 <img src="./qubestat_lamp_stack.png" alt="full_stack_archi">
 
 ## Setup Project:
-- Open Xampp / any other php development toolkit.
 
 - `cd backend` or `cd frontend` based on your developer role.
 
-- For ***Backend Devs***: 
-    - Make an `.env` file and copy and paste the `env-example` file and then install the dotenv dependency through composer by executing `composer install`
+- For ***Backend Devs***: Read Instructtion from [`backend/README.md`]("https://github.com/Nil369/QubeStat/blob/main/backend/README.md)
 
-    - Go to `localhost/phpmyadmin` make an db of your choice and then import the `sample_data.sql` for testing purposes.
+- For ***Frontend Devs***: Read Instructtion from `frontend/README.md`
 
-    - We are following a procedural approach in the `models handel sql query`. In the `api` we are developing the RestAPI
-
-    - In the `heplers` folder we will have some utility functions
